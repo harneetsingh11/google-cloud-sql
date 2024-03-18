@@ -10,19 +10,22 @@ This module consists of the following submodules:
 See more details in each module's README.
 
 ## Compatibility
-This module is meant for use with Terraform 1.3+ and tested using Terraform 1.6+.
-If you find incompatibilities using Terraform `>=1.13`, please open an issue.
+This module is meant for use with Terraform 0.13+ and tested using Terraform 1.0+.
+If you find incompatibilities using Terraform `>=0.13`, please open an issue.
+
+If you haven't [upgraded](https://www.terraform.io/upgrade-guides/0-13.html) and need a Terraform
+0.12.x-compatible version of this module, the last released version
+intended for Terraform 0.12.x is [v5.0.0](https://registry.terraform.io/modules/GoogleCloudPlatform/sql-db/google/5.0.0).
 
 ## Upgrading
 
-The current version is 20.X. The following guides are available to assist with upgrades:
+The current version is 13.X. The following guides are available to assist with upgrades:
 
 - [1.X -> 2.0](./docs/upgrading_to_sql_db_2.0.0.md)
 - [2.X -> 3.0](./docs/upgrading_to_sql_db_3.0.0.md)
 - [3.X -> 4.0](./docs/upgrading_to_sql_db_4.0.0.md)
 - [10.X -> 11.0](./docs/upgrading_to_sql_db_11.0.0.md)
 - [11.X -> 12.0](./docs/upgrading_to_sql_db_12.0.0.md)
-- [19.X -> 20.0](./docs/upgrading_to_sql_db_20.0.0.md)
 
 ## Root module
 
@@ -33,8 +36,11 @@ The root module has been deprecated. Please switch to using one of the submodule
 ### Installation Dependencies
 
 - [Terraform](https://www.terraform.io/downloads.html) >= 1.3.0
-- [terraform-provider-google](https://github.com/terraform-providers/terraform-provider-google) plugin v5.12+
-- [Terraform Provider Beta for GCP](https://github.com/terraform-providers/terraform-provider-google-beta) plugin v5.12+
+- [terraform-provider-google](https://github.com/terraform-providers/terraform-provider-google) plugin >= v4.45.0
+
+The following dependency must be available for SQL Server module:
+
+- [Terraform Provider Beta for GCP](https://github.com/terraform-providers/terraform-provider-google-beta) plugin >= v4.45.0
 
 ### Configure a Service Account
 
@@ -79,7 +85,7 @@ For MySQL :
 ```
 module "sql-db" {
   source  = "GoogleCloudPlatform/sql-db/google//modules/mysql"
-  version = "~> 20.0"
+  version = "8.0.0"
 }
 ```
 
@@ -88,7 +94,7 @@ or for PostgreSQL :
 ```
 module "sql-db" {
   source  = "GoogleCloudPlatform/sql-db/google//modules/postgresql"
-  version = "~> 20.0"
+  version = "8.0.0"
 }
 ```
 
@@ -97,7 +103,7 @@ or for MSSQL Server :
 ```
 module "sql-db" {
   source  = "GoogleCloudPlatform/sql-db/google//modules/mssql"
-  version = "~> 20.0"
+  version = "8.0.0"
 }
 ```
 

@@ -16,7 +16,6 @@
 
 locals {
   ip_configuration_enabled = length(keys(var.ip_configuration)) > 0 ? true : false
-  is_secondary_instance    = var.master_instance_name != null
 
   ip_configurations = {
     enabled  = var.ip_configuration
@@ -43,16 +42,14 @@ resource "random_password" "root-password" {
 }
 
 resource "google_sql_database_instance" "default" {
-  provider             = google-beta
-  project              = var.project_id
-  name                 = var.random_instance_name ? "${var.name}-${random_id.suffix[0].hex}" : var.name
-  database_version     = var.database_version
-  region               = var.region
-  encryption_key_name  = var.encryption_key_name
-  root_password        = coalesce(var.root_password, random_password.root-password.result)
-  deletion_protection  = var.deletion_protection
-  master_instance_name = var.master_instance_name
-  instance_type        = local.is_secondary_instance ? "READ_REPLICA_INSTANCE" : var.instance_type
+  provider            = google-beta
+  project             = var.project_id
+  name                = var.random_instance_name ? "${var.name}-${random_id.suffix[0].hex}" : var.name
+  database_version    = var.database_version
+  region              = var.region
+  encryption_key_name = var.encryption_key_name
+  root_password       = coalesce(var.root_password, random_password.root-password.result)
+  deletion_protection = var.deletion_protection
 
   settings {
     tier                        = var.tier
@@ -63,7 +60,7 @@ resource "google_sql_database_instance" "default" {
     connector_enforcement       = local.connector_enforcement
 
     dynamic "backup_configuration" {
-      for_each = !local.is_secondary_instance && var.backup_configuration.enabled ? [var.backup_configuration] : []
+      for_each = var.backup_configuration.enabled ? [var.backup_configuration] : []
       content {
         binary_log_enabled             = lookup(backup_configuration.value, "binary_log_enabled", null)
         enabled                        = lookup(backup_configuration.value, "enabled", null)
@@ -81,7 +78,7 @@ resource "google_sql_database_instance" "default" {
       }
     }
     dynamic "deny_maintenance_period" {
-      for_each = local.is_secondary_instance ? [] : var.deny_maintenance_period
+      for_each = var.deny_maintenance_period
       content {
         end_date   = lookup(deny_maintenance_period.value, "end_date", null)
         start_date = lookup(deny_maintenance_period.value, "start_date", null)
@@ -138,22 +135,16 @@ resource "google_sql_database_instance" "default" {
 
     user_labels = var.user_labels
 
-    dynamic "location_preference" {
-      for_each = var.zone != null ? ["location_preference"] : []
-      content {
-        zone                   = var.zone
-        secondary_zone         = local.is_secondary_instance ? null : var.secondary_zone
-        follow_gae_application = local.is_secondary_instance ? null : var.follow_gae_application
-      }
+    location_preference {
+      zone                   = var.zone
+      secondary_zone         = var.secondary_zone
+      follow_gae_application = var.follow_gae_application
     }
 
-    dynamic "maintenance_window" {
-      for_each = local.is_secondary_instance ? [] : ["maintenance_window"]
-      content {
-        day          = var.maintenance_window_day
-        hour         = var.maintenance_window_hour
-        update_track = var.maintenance_window_update_track
-      }
+    maintenance_window {
+      day          = var.maintenance_window_day
+      hour         = var.maintenance_window_hour
+      update_track = var.maintenance_window_update_track
     }
   }
 
@@ -174,7 +165,6 @@ resource "google_sql_database_instance" "default" {
 }
 
 resource "google_sql_database" "default" {
-  count      = var.enable_default_db ? 1 : 0
   name       = var.db_name
   project    = var.project_id
   instance   = google_sql_database_instance.default.name
@@ -222,7 +212,6 @@ resource "random_password" "additional_passwords" {
 }
 
 resource "google_sql_user" "default" {
-  count      = var.enable_default_user ? 1 : 0
   name       = var.user_name
   project    = var.project_id
   instance   = google_sql_database_instance.default.name

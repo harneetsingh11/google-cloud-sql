@@ -49,20 +49,6 @@ variable "region" {
   default     = "us-central1"
 }
 
-// optional
-variable "master_instance_name" {
-  description = "The name of the existing instance that will act as the master in the replication setup."
-  type        = string
-  default     = null
-}
-
-// optional
-variable "instance_type" {
-  description = "Users can upgrade a read replica instance to a stand-alone Cloud SQL instance with the help of instance_type. To promote, users have to set the instance_type property as CLOUD_SQL_INSTANCE and remove/unset master_instance_name and replica_configuration from instance configuration. This operation might cause your instance to restart."
-  type        = string
-  default     = null
-}
-
 // Master
 variable "tier" {
   description = "The tier for the master instance."
@@ -79,7 +65,6 @@ variable "edition" {
 variable "zone" {
   description = "The zone for the master instance, it should be something like: `us-central1-a`, `us-east1-c`."
   type        = string
-  default     = null
 }
 
 variable "secondary_zone" {
@@ -189,7 +174,7 @@ variable "data_cache_enabled" {
 }
 
 variable "deny_maintenance_period" {
-  description = "The Deny Maintenance Period fields to prevent automatic maintenance from occurring during a 90-day time period. List accepts only one value. See [more details](https://cloud.google.com/sql/docs/mysql/maintenance)"
+  description = "The Deny Maintenance Period fields to prevent automatic maintenance from occurring during a 90-day time period. See [more details](https://cloud.google.com/sql/docs/mysql/maintenance)"
   type = list(object({
     end_date   = string
     start_date = string
@@ -230,7 +215,6 @@ variable "ip_configuration" {
     ipv4_enabled                                  = optional(bool, true)
     private_network                               = optional(string)
     require_ssl                                   = optional(bool)
-    ssl_mode                                      = optional(string)
     allocated_ip_range                            = optional(string)
     enable_private_path_for_google_cloud_services = optional(bool, false)
     psc_enabled                                   = optional(bool, false)
@@ -341,9 +325,9 @@ variable "user_host" {
 }
 
 variable "root_password" {
-  description = "MySQL password for the root user."
+  description = "Mysql password for the root user. If not set, a random one will be generated and available in the root_password output variable."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "user_password" {

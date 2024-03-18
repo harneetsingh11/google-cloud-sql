@@ -14,9 +14,6 @@
 
 timeout: 10800s
 steps:
-  - id: swap-module-refs
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['module-swapper']
   - id: prepare
     name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
     args: ['/bin/bash', '-c', 'source /usr/local/bin/task_helper_functions.sh && prepare_environment']
@@ -38,36 +35,6 @@ steps:
       - prepare
     name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
     args: ['/bin/bash', '-c', 'cft test run all --stage init --verbose']
-
-  - id: apply postgresql-cross-region-failover
-    waitFor: ["init-all", "wait for api activation"]
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['/bin/bash', '-c', 'cft test run TestPostgreSqlCrossRegionFailover --stage apply --verbose']
-  - id: verify postgresql-cross-region-failover
-    waitFor:
-      - apply postgresql-cross-region-failover
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['/bin/bash', '-c', 'cft test run TestPostgreSqlCrossRegionFailover --stage verify --verbose']
-  - id: teardown postgresql-cross-region-failover
-    waitFor:
-      - verify postgresql-cross-region-failover
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['/bin/bash', '-c', 'cft test run TestPostgreSqlCrossRegionFailover --stage teardown --verbose']
-
-  - id: apply mssql-failover-replica
-    waitFor: ["init-all", "wait for api activation"]
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['/bin/bash', '-c', 'cft test run TestMsSqlFailoverReplica --stage apply --verbose']
-  - id: verify mssql-failover-replica
-    waitFor:
-      - apply mssql-failover-replica
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['/bin/bash', '-c', 'cft test run TestMsSqlFailoverReplica --stage verify --verbose']
-  - id: teardown mssql-failover-replica
-    waitFor:
-      - verify mssql-failover-replica
-    name: 'gcr.io/cloud-foundation-cicd/$_DOCKER_IMAGE_DEVELOPER_TOOLS:$_DOCKER_TAG_VERSION_DEVELOPER_TOOLS'
-    args: ['/bin/bash', '-c', 'cft test run TestMsSqlFailoverReplica --stage teardown --verbose']
 
   - id: apply mssql-ha-local
     waitFor: ["init-all", "wait for api activation"]
@@ -256,5 +223,5 @@ tags:
   - 'integration'
 substitutions:
   _DOCKER_IMAGE_DEVELOPER_TOOLS: 'cft/developer-tools'
-  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.19'
+  _DOCKER_TAG_VERSION_DEVELOPER_TOOLS: '1.16'
   _API_ACTIVATION_SECONDS_WAIT: '900'

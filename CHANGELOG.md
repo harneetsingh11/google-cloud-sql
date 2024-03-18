@@ -5,68 +5,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this
 project adheres to [Semantic Versioning](http://semver.org/).
 
-## [20.0.0](https://github.com/terraform-google-modules/terraform-google-sql-db/compare/v19.0.0...v20.0.0) (2024-03-08)
-
-
-### ⚠ BREAKING CHANGES
-
-* **TPG>=5.12:** Add option to create and failover a replica instance in Postgresql and MsSQL sub-module ([#582](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/582))
-* **TPG>=5.6:** bump required google provider to 5.6 for postgres
-
-### Features
-
-* **TPG>=5.12:** Add option to create and failover a replica instance in Postgresql and MsSQL sub-module ([#582](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/582)) ([141e54a](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/141e54a9256feae704220ceed24c9a94ebaf7e27))
-
-
-### Bug Fixes
-
-* mark replicas_instance_server_ca_certs output as sensitive ([#579](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/579)) ([faa064e](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/faa064e069a4678f54e6688825e85dcfb3dcf1c2))
-* **TPG>=5.6:** bump required google provider to 5.6 for postgres ([0d3b434](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/0d3b43426b93c1492f6a82e3367e40f2d41b0edc))
-
-## [19.0.0](https://github.com/terraform-google-modules/terraform-google-sql-db/compare/v18.2.0...v19.0.0) (2024-02-08)
-
-
-### ⚠ BREAKING CHANGES
-
-* Allow passing ssl_mode for MySQL Module ([#575](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/575))
-
-### Features
-
-* Allow passing ssl_mode for MySQL Module ([#575](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/575)) ([c7ab6ec](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/c7ab6ecbcdfaaee94586b2251ff643d05311a5cc))
-* Make MySQL CloudSQL zone optional ([#572](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/572)) ([3c4b504](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/3c4b504671cffc222b408b1f3051175837757b1e))
-
-
-### Bug Fixes
-
-* **backup:** backups are not deleted when retained nr of backups &gt;= 20 ([#566](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/566)) ([6c4b0e3](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/6c4b0e38b7d37e67107955da3d9a46e691b3f47a))
-* Cloud SQL does not support multiple deny_maintenance_period block. Update variable description ([#564](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/564)) ([9e55c87](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/9e55c87c54371780f175734212abce3e4d4963c3))
-* **deps:** Update cft/developer-tools Docker tag to v1.19 ([#571](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/571)) ([bd18ee6](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/bd18ee68a2a05c5587706d9cbca6023b8eab0ae1))
-* Improve MySQL root_password documentation ([#573](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/573)) ([611edfd](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/611edfd8d72d4560c629fa8e3863932eb309323d))
-
-## [18.2.0](https://github.com/terraform-google-modules/terraform-google-sql-db/compare/v18.1.0...v18.2.0) (2024-01-03)
-
-
-### Features
-
-* add master_instance_name and instance_type to mysql module ([#556](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/556)) ([6cda644](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/6cda644a136a1cac3ada9358007619f02f90a169))
-
-
-### Bug Fixes
-
-* Don't define backup_configuration if default DB is configured as a replica ([#559](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/559)) ([52224ad](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/52224ada14af2f828fefc84f1e7fce2aeb52f670))
-
-## [18.1.0](https://github.com/terraform-google-modules/terraform-google-sql-db/compare/v18.0.0...v18.1.0) (2023-12-13)
-
-
-### Features
-
-* **postgres:** add root password parameter ([#521](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/521)) ([be2da56](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/be2da560ca7a006c56cbffab71e0b6e931661f7c))
-
-
-### Bug Fixes
-
-* add dns_name to output in postgresql module ([#544](https://github.com/terraform-google-modules/terraform-google-sql-db/issues/544)) ([2ade7eb](https://github.com/terraform-google-modules/terraform-google-sql-db/commit/2ade7ebe44362c0593cfb38e0704d9098d231092))
-
 ## [18.0.0](https://github.com/terraform-google-modules/terraform-google-sql-db/compare/v17.1.0...v18.0.0) (2023-12-04)
 
 

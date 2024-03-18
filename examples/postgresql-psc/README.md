@@ -30,7 +30,6 @@ terraform destroy
 
 | Name | Description |
 |------|-------------|
-| dns\_name | n/a |
 | name | The name for Cloud SQL instance |
 | project\_id | n/a |
 

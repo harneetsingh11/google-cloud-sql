@@ -21,19 +21,7 @@ variable "project_id" {
 
 variable "name" {
   type        = string
-  description = "The name of the Cloud SQL instance"
-}
-
-variable "master_instance_name" {
-  type        = string
-  description = "Name of the master instance if this is a failover replica. Required for creating failover replica instance. Not needed for master instance. When removed, next terraform apply will promote this failover failover replica instance as master instance"
-  default     = null
-}
-
-variable "instance_type" {
-  type        = string
-  description = "The type of the instance. The supported values are SQL_INSTANCE_TYPE_UNSPECIFIED, CLOUD_SQL_INSTANCE, ON_PREMISES_INSTANCE and READ_REPLICA_INSTANCE. Set to READ_REPLICA_INSTANCE if master_instance_name value is provided"
-  default     = "CLOUD_SQL_INSTANCE"
+  description = "The name of the Cloud SQL resources"
 }
 
 variable "random_instance_name" {
@@ -49,7 +37,7 @@ variable "database_version" {
 
   validation {
     condition     = (length(var.database_version) >= 9 && ((upper(substr(var.database_version, 0, 9)) == "POSTGRES_") && can(regex("^\\d+(?:_?\\d)*$", substr(var.database_version, 9, -1))))) || can(regex("^\\d+(?:_?\\d)*$", var.database_version))
-    error_message = "The specified database version is not a valid representaion of database version. Valid database versions should be like the following patterns:- \"9_6\", \"postgres_9_6\", \"POSTGRES_14\" or \"POSTGRES_15\""
+    error_message = "The specified database version is not a valid representaion of database version. Valid database versions should be like the following patterns:- \"9_6\", \"postgres_9_6\" or \"POSTGRES_14\"."
   }
 }
 
@@ -61,26 +49,26 @@ variable "region" {
 }
 
 variable "tier" {
-  description = "The tier for the Cloud SQL instance."
+  description = "The tier for the master instance."
   type        = string
   default     = "db-f1-micro"
 }
 
 variable "edition" {
-  description = "The edition of the Cloud SQL instance, can be ENTERPRISE or ENTERPRISE_PLUS."
+  description = "The edition of the instance, can be ENTERPRISE or ENTERPRISE_PLUS."
   type        = string
   default     = null
 }
 
 variable "zone" {
   type        = string
-  description = "The zone for the Cloud SQL instance, it should be something like: `us-central1-a`, `us-east1-c`."
+  description = "The zone for the master instance, it should be something like: `us-central1-a`, `us-east1-c`."
   default     = null
 }
 
 variable "secondary_zone" {
   type        = string
-  description = "The preferred zone for the replica instance, it should be something like: `us-central1-a`, `us-east1-c`."
+  description = "The preferred zone for the secondary/failover instance, it should be something like: `us-central1-a`, `us-east1-c`."
   default     = null
 }
 
@@ -91,19 +79,19 @@ variable "follow_gae_application" {
 }
 
 variable "activation_policy" {
-  description = "The activation policy for the Cloud SQL instance.Can be either `ALWAYS`, `NEVER` or `ON_DEMAND`."
+  description = "The activation policy for the master instance.Can be either `ALWAYS`, `NEVER` or `ON_DEMAND`."
   type        = string
   default     = "ALWAYS"
 }
 
 variable "availability_type" {
-  description = "The availability type for the Cloud SQL instance.This is only used to set up high availability for the PostgreSQL instance. Can be either `ZONAL` or `REGIONAL`."
+  description = "The availability type for the master instance.This is only used to set up high availability for the PostgreSQL instance. Can be either `ZONAL` or `REGIONAL`."
   type        = string
   default     = "ZONAL"
 }
 
 variable "deletion_protection_enabled" {
-  description = "Enables protection of an Cloud SQL instance from accidental deletion across all surfaces (API, gcloud, Cloud Console and Terraform)."
+  description = "Enables protection of an instance from accidental deletion across all surfaces (API, gcloud, Cloud Console and Terraform)."
   type        = bool
   default     = false
 }
@@ -127,43 +115,43 @@ variable "disk_autoresize_limit" {
 }
 
 variable "disk_size" {
-  description = "The disk size for the Cloud SQL instance."
+  description = "The disk size for the master instance."
   type        = number
   default     = 10
 }
 
 variable "disk_type" {
-  description = "The disk type for the Cloud SQL instance."
+  description = "The disk type for the master instance."
   type        = string
   default     = "PD_SSD"
 }
 
 variable "pricing_plan" {
-  description = "The pricing plan for the Cloud SQL instance."
+  description = "The pricing plan for the master instance."
   type        = string
   default     = "PER_USE"
 }
 
 variable "maintenance_window_day" {
-  description = "The day of week (1-7) for the Cloud SQL instance maintenance."
+  description = "The day of week (1-7) for the master instance maintenance."
   type        = number
   default     = 1
 }
 
 variable "maintenance_window_hour" {
-  description = "The hour of day (0-23) maintenance window for the Cloud SQL instance maintenance."
+  description = "The hour of day (0-23) maintenance window for the master instance maintenance."
   type        = number
   default     = 23
 }
 
 variable "maintenance_window_update_track" {
-  description = "The update track of maintenance window for the Cloud SQL instance maintenance.Can be either `canary` or `stable`."
+  description = "The update track of maintenance window for the master instance maintenance.Can be either `canary` or `stable`."
   type        = string
   default     = "canary"
 }
 
 variable "database_flags" {
-  description = "The database flags for the Cloud SQL instance. See [more details](https://cloud.google.com/sql/docs/postgres/flags)"
+  description = "The database flags for the master instance. See [more details](https://cloud.google.com/sql/docs/postgres/flags)"
   type = list(object({
     name  = string
     value = string
@@ -172,13 +160,13 @@ variable "database_flags" {
 }
 
 variable "user_labels" {
-  description = "The key/value labels for the Cloud SQL instances."
+  description = "The key/value labels for the master instances."
   type        = map(string)
   default     = {}
 }
 
 variable "deny_maintenance_period" {
-  description = "The Deny Maintenance Period fields to prevent automatic maintenance from occurring during a 90-day time period. List accepts only one value. See [more details](https://cloud.google.com/sql/docs/postgres/maintenance)"
+  description = "The Deny Maintenance Period fields to prevent automatic maintenance from occurring during a 90-day time period. See [more details](https://cloud.google.com/sql/docs/postgres/maintenance)"
   type = list(object({
     end_date   = string
     start_date = string
@@ -215,17 +203,17 @@ variable "insights_config" {
 variable "password_validation_policy_config" {
   description = "The password validation policy settings for the database instance."
   type = object({
-    min_length                  = optional(number)
-    complexity                  = optional(string)
-    reuse_interval              = optional(number)
-    disallow_username_substring = optional(bool)
-    password_change_interval    = optional(string)
+    min_length                  = number
+    complexity                  = string
+    reuse_interval              = number
+    disallow_username_substring = bool
+    password_change_interval    = string
   })
   default = null
 }
 
 variable "ip_configuration" {
-  description = "The ip configuration for the Cloud SQL instances."
+  description = "The ip configuration for the master instances."
   type = object({
     authorized_networks                           = optional(list(map(string)), [])
     ipv4_enabled                                  = optional(bool, true)
@@ -426,12 +414,6 @@ variable "connector_enforcement" {
   description = "Enforce that clients use the connector library"
   type        = bool
   default     = false
-}
-
-variable "root_password" {
-  description = "Initial root password during creation"
-  type        = string
-  default     = null
 }
 
 variable "data_cache_enabled" {
